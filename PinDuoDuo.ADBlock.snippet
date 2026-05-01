@@ -44,13 +44,9 @@ host, apm-a.pinduoduo.com, reject
 ^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/growth\/nagato\/app\/index\/gather\? url reject-dict
 ^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/engels\/wait\/receive\/review\? url reject-dict
 ^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/buffon\/nasus\/recommend\? url reject-dict
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? url jsonjq-response-body 'delpaths([["result","dy_module","irregular_banner_dy"]])'
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? url jsonjq-response-body 'delpaths([["result","icon_set"]])'
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? url jsonjq-response-body 'delpaths([["result","search_bar_hot_query"]])'
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? url jsonjq-response-body '.result.bottom_tabs? |= map(select(.link | IN("index.html", "chat_list.html", "personal.html"))) | .result.buffer_bottom_tabs? |= map(select(.link | IN("index.html", "chat_list.html", "personal.html"))) | .result.all_top_opts |= map(del(.selected_image, .image, .height, .width))'
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/search\? url jsonjq-response-body 'delpaths([["expansion"]])'
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/philo\/personal\/hub\? url jsonjq-response-body 'delpaths([["monthly_card_entrance"]])'
-^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/philo\/personal\/hub\? url jsonjq-response-body 'delpaths([["personal_center_style_v2_vo"]])'
+^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/pinduoduo.adblock.js
+^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/search\? url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/pinduoduo.adblock.js
+^https:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/philo\/personal\/hub\? url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/pinduoduo.adblock.js
 
 #[mitm]
 hostname = api.pinduoduo.com, api-shb1.pinduoduo.com
