@@ -1,3 +1,18 @@
+/*************************************
+App: PinDuoDuo ADBlock
+URL: https://apps.apple.com/app/id1044283059
+Updated: 2026-05-01
+Author: huzi
+
+[rewrite_local]
+^https?:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/alexa\/homepage\/hub\? url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/pinduoduo.adblock.js
+^https?:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/search\? url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/pinduoduo.adblock.js
+^https?:\/\/api(?:-[a-z0-9]+)?\.pinduoduo\.com\/api\/philo\/personal\/hub\? url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/pinduoduo.adblock.js
+
+[mitm]
+hostname = api.pinduoduo.com, api-shb1.pinduoduo.com
+*************************************/
+
 const url = $request.url || "";
 
 function delPath(obj, path) {
