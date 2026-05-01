@@ -24,6 +24,7 @@ host, apm-a.pinduoduo.com, reject
 #[rewrite_local]
 ^http:\/\/((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/d(\d)? \r\nUser-Agent: .*com\.xunmeng\.pinduoduo.* url-and-header reject
 ^http:\/\/\[[0-9a-fA-F:]+\]\/d(\d)?\? \r\nUser-Agent: .*com\.xunmeng\.pinduoduo.* url-and-header reject
+^https:\/\/api\.pinduoduo\.com\/ url response-header (?i)(\r\n)alt-svc:.+(\r\n) response-header $1$2
 ^https:\/\/api\.pinduoduo\.com\/api\/aristotle\/unrated_order_for_unreceived_tab\? url reject-dict
 ^https:\/\/api\.pinduoduo\.com\/api\/aristotle\/query_order_list_tabs_element\? url reject-dict
 ^https:\/\/api\.pinduoduo\.com\/api\/aquarius\/hungary\/global\/homepage\? url reject-dict
