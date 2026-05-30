@@ -6,7 +6,8 @@ Author: huzi
 
 说明：
 - [filter_local] 直接按域名拒绝第三方广告/聚合 SDK，这是挡住开屏/插屏的关键（不需要 MITM）。
-- [rewrite_local] + 脚本把 Oray 自家广告接口返回内容清空（这部分需要 MITM 并信任证书）。
+- [rewrite_local] + 脚本：清空 Oray 自家广告接口返回，并 best-effort 把 /services 改成付费等级伪装会员（需要 MITM 并信任证书）。
+- 伪会员字段为推测值，可能无效或导致会员页 UI 异常，如有问题删掉 /services 那条规则即可。
 
 [filter_local]
 ; —— 穿山甲 / GroMore ——
@@ -55,6 +56,7 @@ host, sl-tk.oray.com, reject
 [rewrite_local]
 ^https?:\/\/client-api-v2\.oray\.com\/materials\/ url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
 ^https?:\/\/api-std\.sunlogin\.oray\.com\/advertisement\/frequency(\?|$) url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
+^https?:\/\/api-std\.sunlogin\.oray\.com\/services\/\d+ url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
 
 [mitm]
 hostname = client-api-v2.oray.com, api-std.sunlogin.oray.com
@@ -74,6 +76,25 @@ try {
     try { data = body ? JSON.parse(body) : {}; } catch (e) { data = {}; }
     data.campaigns = [];
     body = JSON.stringify(data);
+  } else if (/\/services\/\d+/.test(url)) {
+    // best-effort 伪造会员：免费版(level 0/grade free)才有广告，这里抬成付费等级
+    const data = body ? JSON.parse(body) : {};
+    if (data && typeof data === "object" && "level" in data) {
+      data.level = 5;
+      if (data.serviceid === 0) data.serviceid = 999999;
+      if (data.productid === 0) data.productid = 999999;
+      data.quantity = 9999;
+      data.expiredate = 4080621133; // ~2099
+      data.expiredays = 99999;
+      data.service_name = { cn: "专业版", tc: "專業版", en: "Pro." };
+      data.product_group = "personal";
+      data.extends = Object.assign({}, data.extends, {
+        upgrade: false,
+        grade_name: "professional",
+        product_name: { zh_cn: "专业版", en: "Pro.", zh_tw: "專業版" }
+      });
+      body = JSON.stringify(data);
+    }
   }
 } catch (e) {
   if (/\/materials\//.test(url)) body = '{"campaigns":[]}';
