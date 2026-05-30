@@ -6,8 +6,12 @@ Author: huzi
 
 说明：
 - [filter_local] 直接按域名拒绝第三方广告/聚合 SDK，这是挡住开屏/插屏的关键（不需要 MITM）。
-- [rewrite_local] + 脚本：清空 Oray 自家广告接口返回，并 best-effort 把 /services 改成付费等级伪装会员（需要 MITM 并信任证书）。
-- 伪会员字段为推测值，可能无效或导致会员页 UI 异常，如有问题删掉 /services 那条规则即可。
+- [rewrite_local] + 脚本（需要 MITM 并信任证书）：
+    · 清空 Oray 自家广告接口返回（materials / advertisement.frequency）
+    · best-effort 把 /services 改成付费等级伪装会员
+    · /client/free-tips：隐藏连通远程后的“免费版/升级”提示（保留安全提醒）
+    · /remote-addr：移除控制工具栏的“游戏模式”画质项
+- 伪会员/去游戏模式字段为推测值，若相关页面 UI 异常，删掉对应 [rewrite_local] 规则即可。
 
 [filter_local]
 ; —— 穿山甲 / GroMore ——
@@ -57,9 +61,11 @@ host, sl-tk.oray.com, reject
 ^https?:\/\/client-api-v2\.oray\.com\/materials\/ url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
 ^https?:\/\/api-std\.sunlogin\.oray\.com\/advertisement\/frequency(\?|$) url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
 ^https?:\/\/api-std\.sunlogin\.oray\.com\/services\/\d+ url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
+^https?:\/\/slapi\.oray\.net\/client\/free-tips url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
+^https?:\/\/api-std\.sunlogin\.oray\.com\/remote-addr url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/sunlogin.adblock.js
 
 [mitm]
-hostname = client-api-v2.oray.com, api-std.sunlogin.oray.com
+hostname = client-api-v2.oray.com, api-std.sunlogin.oray.com, slapi.oray.net
 *************************************/
 
 const url = $request.url || "";
@@ -95,6 +101,23 @@ try {
       });
       body = JSON.stringify(data);
     }
+  } else if (/\/client\/free-tips/.test(url)) {
+    // 连通远程后的“当前使用免费服务/升级”提示，隐藏它（保留 security_tips 安全提醒）
+    const data = body ? JSON.parse(body) : {};
+    if (data && data.data) {
+      data.data.isshow = false;
+      data.data.info = "";
+      data.data.paidinfo = "";
+    }
+    body = JSON.stringify(data);
+  } else if (/\/remote-addr/.test(url)) {
+    // 控制工具栏的“游戏模式”画质项，移除以使其不在界面显示
+    const data = body ? JSON.parse(body) : {};
+    if (data && data.server) {
+      if (data.server.fps) delete data.server.fps.game;
+      if (data.server.encode_config) delete data.server.encode_config.game;
+    }
+    body = JSON.stringify(data);
   }
 } catch (e) {
   if (/\/materials\//.test(url)) body = '{"campaigns":[]}';
