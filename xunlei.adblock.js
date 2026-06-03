@@ -1,0 +1,91 @@
+/*************************************
+App: Xunlei 迅雷 ADBlock
+URL: https://api-shoulei-ssl.xunlei.com  https://admark-x.xunlei.com
+Updated: 2026-06-03
+Author: huzi
+
+说明：
+- [filter_local] 按域名拒绝第三方广告/聚合 SDK 与广告埋点（开屏/插屏/信息流的关键，不需要 MITM）。
+- [rewrite_local] + 脚本把迅雷自家广告位接口 flowhub 的 slots 清空（需要 MITM 并信任证书）。
+- 如某处功能异常，删掉对应规则即可。
+
+[filter_local]
+; —— 迅雷自家广告/埋点域名 ——
+host, admark-x.xunlei.com, reject
+host, analysis-acc-ssl.xunlei.com, reject
+host, etl-xlmc-ssl.sandai.net, reject
+; —— 穿山甲 / CSJ ——
+host-suffix, pangolin-sdk-toutiao.com, reject
+host-suffix, pangolin-sdk-toutiao1.com, reject
+host-suffix, pangolin-sdk-toutiao-b.com, reject
+host-suffix, pglstatp-toutiao.com, reject
+host-suffix, csjdeveloper.com, reject
+host-suffix, csjplatform.com, reject
+host-suffix, ctobsnssdk.com, reject
+; —— 广点通 GDT ——
+host-suffix, gdt.qq.com, reject
+host, tangram.e.qq.com, reject
+host, sdk.e.qq.com, reject
+; —— 最右 zuiyou ——
+host, adapi.izuiyou.com, reject
+host-suffix, ixiaochuan.cn, reject
+; —— VLion / 1rtb ——
+host-suffix, 1rtb.cn, reject
+host-suffix, 1rtb.com, reject
+host-suffix, 1rtb.net, reject
+; —— Ubix ——
+host-suffix, ubixioe.com, reject
+; —— 倍孜 Beizi ——
+host-suffix, beizi.biz, reject
+; —— Fancy DSP ——
+host-suffix, fancydsp.com, reject
+host-suffix, fancyapi.com, reject
+; —— adn-plus / feedcoop / hubcloud ——
+host-suffix, adn-plus.com.cn, reject
+host-suffix, feedcoopapi.com, reject
+host-suffix, hubcloud.com.cn, reject
+; —— 快手广告 ——
+host, open.e.kuaishou.com, reject
+host-suffix, adkwai.com, reject
+host, gdfp.gifshow.com, reject
+host-suffix, yximgs.com, reject
+; —— 抖音/字节广告 ——
+host, p3-sign.douyinpic.com, reject
+host, webcast-open.douyin.com, reject
+host-suffix, volces.com, reject
+host-suffix, volceapplog.com, reject
+host-suffix, volccdn.com, reject
+; —— 京东广告 ——
+host, janapi.jd.com, reject
+host, xlog.jd.com, reject
+; —— 淘宝广告素材 ——
+host, qh-material.taobao.com, reject
+; —— 统计 / 埋点 ——
+host-suffix, umeng.com, reject
+host, rmonitor.qq.com, reject
+host-suffix, tpstelemetry.tencent.com, reject
+host, h.trace.qq.com, reject
+host, snowflake.qq.com, reject
+host, tdid.m.qq.com, reject
+
+[rewrite_local]
+^https?:\/\/api-shoulei-ssl\.xunlei\.com\/flowhub\/v1\/slots url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/xunlei.adblock.js
+
+[mitm]
+hostname = api-shoulei-ssl.xunlei.com
+*************************************/
+
+const url = $request.url || "";
+let body = $response.body;
+
+try {
+  if (/\/flowhub\/v1\/slots/.test(url)) {
+    const data = body ? JSON.parse(body) : {};
+    if (data && typeof data === "object") data.slots = [];
+    body = JSON.stringify(data);
+  }
+} catch (e) {
+  body = '{"slots":[]}';
+}
+
+$done({ body });
