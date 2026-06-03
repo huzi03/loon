@@ -6,44 +6,32 @@ Author: huzi
 
 [rewrite_local]
 ^https?:\/\/qadx\.qinlinad\.com\/ad\/ url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/qinlinopendoor.adblock.js
-
-[filter_local]
-host-suffix, qinlinad.com, reject
-host-suffix, yfanads.com, reject
-host-suffix, adxtop.cn, reject
-host-suffix, pangolin-sdk-toutiao.com, reject
-host-suffix, pangolin-sdk-toutiao1.com, reject
-host-suffix, pangolin-sdk-toutiao-b.com, reject
-host-suffix, pglstatp-toutiao.com, reject
-host-suffix, ctobsnssdk.com, reject
-host-suffix, zijieapi.com, reject
-host-suffix, volces.com, reject
-host-suffix, bytescm.com, reject
-host-suffix, douyinpic.com, reject
-host-suffix, ibytedapm.com, reject
-host-suffix, gdt.qq.com, reject
-host, sdk.e.qq.com, reject
-host, mobads.baidu.com, reject
-host, mobads-logs.baidu.com, reject
-host, hm.baidu.com, reject
-host, h2tcbox.baidu.com, reject
-host, open.e.kuaishou.com, reject
-host, open.e.kuaishou.cn, reject
-host-suffix, adkwai.com, reject
-host-suffix, adukwai.com, reject
-host, gdfp.gifshow.com, reject
-host-suffix, yximgs.com, reject
-host, janapi.jd.com, reject
-host, xlog.jd.com, reject
-host, dsp-x.jd.com, reject
-host, kepler.jd.com, reject
-host, knicks.jd.com, reject
-host-suffix, ums-api.qiniu.com, reject
-host-suffix, umeng.com, reject
-host, snowflake.qq.com, reject
+^https?:\/\/(api|adx-data|tracker)\.yfanads\.com\/ url reject
+^https?:\/\/file\.qinlinad\.com\/ url reject
+^https?:\/\/wiretap\.adxtop\.cn\/ url reject
+^https?:\/\/.*\.pangolin-sdk-toutiao\.com url reject
+^https?:\/\/.*\.pangolin-sdk-toutiao1\.com url reject
+^https?:\/\/.*\.pangolin-sdk-toutiao-b\.com url reject
+^https?:\/\/.*\.pglstatp-toutiao\.com url reject
+^https?:\/\/.*\.ctobsnssdk\.com url reject
+^https?:\/\/.*\.zijieapi\.com url reject
+^https?:\/\/.*\.volces\.com url reject
+^https?:\/\/.*\.douyinpic\.com url reject
+^https?:\/\/.*\.ibytedapm\.com url reject
+^https?:\/\/(mi|a|v2mi)\.gdt\.qq\.com\/ url reject
+^https?:\/\/sdk\.e\.qq\.com\/ url reject
+^https?:\/\/mobads(-logs)?\.baidu\.com\/ url reject
+^https?:\/\/(hm|h2tcbox)\.baidu\.com\/ url reject
+^https?:\/\/open\.e\.kuaishou\.(com|cn)\/ url reject
+^https?:\/\/.*\.adkwai\.com url reject
+^https?:\/\/.*\.adukwai\.com url reject
+^https?:\/\/gdfp\.gifshow\.com\/ url reject
+^https?:\/\/(janapi|xlog|dsp-x|kepler|knicks)\.jd\.com\/ url reject
+^https?:\/\/.*\.umeng\.com url reject
+^https?:\/\/snowflake\.qq\.com\/ url reject
 
 [mitm]
-hostname = qadx.qinlinad.com
+hostname = qadx.qinlinad.com, *.yfanads.com, file.qinlinad.com, wiretap.adxtop.cn, *.pangolin-sdk-toutiao.com, mi.gdt.qq.com, a.gdt.qq.com, v2mi.gdt.qq.com, sdk.e.qq.com, mobads.baidu.com, mobads-logs.baidu.com, hm.baidu.com, h2tcbox.baidu.com, open.e.kuaishou.com, open.e.kuaishou.cn, gdfp.gifshow.com, janapi.jd.com, xlog.jd.com, dsp-x.jd.com, snowflake.qq.com
 *************************************/
 
 const url = $request.url || "";
