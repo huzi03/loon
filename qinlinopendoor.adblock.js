@@ -54,8 +54,22 @@ host-suffix, ums-api.qiniu.com, reject
 host-suffix, umeng.com, reject
 host, snowflake.qq.com, reject
 
+[rewrite_local]
+^https?:\/\/qadx\.qinlinad\.com\/ad\/ url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/qinlinopendoor.adblock.js
+
 [mitm]
 hostname = qadx.qinlinad.com
 *************************************/
 
-$done({ body: $response.body });
+const url = $request.url || "";
+let body = $response.body;
+
+try {
+  if (/qinlinad\.com\/ad\//.test(url)) {
+    body = '{"code":0,"data":{}}';
+  }
+} catch (e) {
+  body = '{"code":0,"data":{}}';
+}
+
+$done({ body });
