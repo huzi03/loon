@@ -24,10 +24,12 @@ host-suffix, pglstatp-toutiao.com, reject
 host-suffix, csjdeveloper.com, reject
 host-suffix, csjplatform.com, reject
 host-suffix, ctobsnssdk.com, reject
-; —— 广点通 GDT ——
+; —— 广点通 GDT（含直连 IP 绕域名）——
 host-suffix, gdt.qq.com, reject
 host, tangram.e.qq.com, reject
 host, sdk.e.qq.com, reject
+ip-cidr, 120.233.51.144/32, reject, no-resolve
+ip-cidr, 36.155.213.182/32, reject, no-resolve
 ; —— 最右 zuiyou ——
 host, adapi.izuiyou.com, reject
 host-suffix, ixiaochuan.cn, reject
@@ -62,6 +64,8 @@ host, janapi.jd.com, reject
 host, xlog.jd.com, reject
 ; —— 淘宝广告素材 ——
 host, qh-material.taobao.com, reject
+; —— 数美风控指纹 ——
+host-suffix, fengkongcloud.com, reject
 ; —— 统计 / 埋点 ——
 host-suffix, umeng.com, reject
 host, rmonitor.qq.com, reject
