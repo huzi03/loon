@@ -1,12 +1,14 @@
 /*************************************
 App: Xunlei 迅雷 ADBlock
-URL: https://api-shoulei-ssl.xunlei.com  https://admark-x.xunlei.com
+URL: https://api-shoulei-ssl.xunlei.com  https://api-gateway-pan.xunlei.com  https://admark-x.xunlei.com
 Updated: 2026-06-03
 Author: huzi
 
 说明：
 - [filter_local] 按域名拒绝第三方广告/聚合 SDK 与广告埋点（开屏/插屏/信息流的关键，不需要 MITM）。
-- [rewrite_local] + 脚本把迅雷自家广告位接口 flowhub 的 slots 清空（需要 MITM 并信任证书）。
+- [rewrite_local] + 脚本（需要 MITM 并信任证书）：
+    · flowhub/v1/slots：清空广告位
+    · aggregate/info：移除"近期必看"(recent_recommend)和首页广告卡片(ads)模块
 - 如某处功能异常，删掉对应规则即可。
 
 [filter_local]
@@ -70,22 +72,33 @@ host, tdid.m.qq.com, reject
 
 [rewrite_local]
 ^https?:\/\/api-shoulei-ssl\.xunlei\.com\/flowhub\/v1\/slots url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/xunlei.adblock.js
+^https?:\/\/api-gateway-pan\.xunlei\.com\/content\/v1\/aggregate\/info url script-response-body https://raw.githubusercontent.com/huzi03/loon/main/xunlei.adblock.js
 
 [mitm]
-hostname = api-shoulei-ssl.xunlei.com
+hostname = api-shoulei-ssl.xunlei.com, api-gateway-pan.xunlei.com
 *************************************/
 
 const url = $request.url || "";
 let body = $response.body;
+
+const REMOVE_MODULES = new Set(["recent_recommend", "ads"]);
 
 try {
   if (/\/flowhub\/v1\/slots/.test(url)) {
     const data = body ? JSON.parse(body) : {};
     if (data && typeof data === "object") data.slots = [];
     body = JSON.stringify(data);
+  } else if (/\/aggregate\/info/.test(url)) {
+    const data = body ? JSON.parse(body) : {};
+    if (data && data.data && Array.isArray(data.data.modules)) {
+      data.data.modules = data.data.modules.filter(
+        (m) => !REMOVE_MODULES.has(m.module_id)
+      );
+    }
+    body = JSON.stringify(data);
   }
 } catch (e) {
-  body = '{"slots":[]}';
+  if (/\/flowhub\/v1\/slots/.test(url)) body = '{"slots":[]}';
 }
 
 $done({ body });
