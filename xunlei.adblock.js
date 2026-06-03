@@ -24,8 +24,9 @@ host-suffix, pglstatp-toutiao.com, reject
 host-suffix, csjdeveloper.com, reject
 host-suffix, csjplatform.com, reject
 host-suffix, ctobsnssdk.com, reject
-; —— 广点通 GDT（含直连 IP 绕域名）——
+; —— 广点通 GDT（含素材域 + 直连 IP）——
 host-suffix, gdt.qq.com, reject
+host-suffix, ugdtimg.com, reject
 host, tangram.e.qq.com, reject
 host, sdk.e.qq.com, reject
 ip-cidr, 120.233.51.144/32, reject, no-resolve
@@ -51,6 +52,7 @@ host-suffix, hubcloud.com.cn, reject
 ; —— 快手广告 ——
 host, open.e.kuaishou.com, reject
 host-suffix, adkwai.com, reject
+host-suffix, adukwai.com, reject
 host, gdfp.gifshow.com, reject
 host-suffix, yximgs.com, reject
 ; —— 抖音/字节广告 ——
@@ -59,11 +61,24 @@ host, webcast-open.douyin.com, reject
 host-suffix, volces.com, reject
 host-suffix, volceapplog.com, reject
 host-suffix, volccdn.com, reject
+host-suffix, volcvod.com, reject
+; —— 美团 DSP ——
+host, impdsp.meituan.com, reject
+host, dspadlogger.waimai.meituan.com, reject
+host, s3plus.meituan.net, reject
+host, p0.meituan.net, reject
 ; —— 京东广告 ——
 host, janapi.jd.com, reject
 host, xlog.jd.com, reject
+host, dsp-x.jd.com, reject
+; —— 百度 ——
+host, feed-image.baidu.com, reject
 ; —— 淘宝广告素材 ——
 host, qh-material.taobao.com, reject
+; —— 贝叶斯 Bayescom ——
+host-suffix, bayescom.com, reject
+; —— 乐播投屏 SDK ——
+host-suffix, hpplay.cn, reject
 ; —— 数美风控指纹 ——
 host-suffix, fengkongcloud.com, reject
 ; —— 统计 / 埋点 ——
